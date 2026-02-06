@@ -1,6 +1,6 @@
 # Finder
 
-![Demo]()
+![Demo](https://github.com/FoKey-Junior/Finder/blob/main/assets/demonstration.png?raw=true)
 
 Современный Finder‑подобный файловый менеджер для macOS на Qt 6
 Сфокусирован на скорости навигации, ясной структуре и аккуратном дизайне
