@@ -1,0 +1,6 @@
+build
+cmake-build-debug
+.idea
+.qtcreator
+.DS_Store
+**/.DS_Store
