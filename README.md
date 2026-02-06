@@ -1,4 +1,19 @@
+<div align="center">
+
+<img src="https://github.com/user-attachments/assets/ff6e45de-9474-43bb-91bd-4621bd649b4c" alt="Finder Demo" width="700" style="border-radius: 24px; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25); margin-bottom: 24px; border: 1px solid rgba(0, 0, 0, 0.08); display: block; margin-left: auto; margin-right: auto;"/>
+
 # Finder
+
+**Finder‑style файловый менеджер для macOS на Qt 6**
+
+[![C++](https://img.shields.io/badge/C++-14-blue.svg)](https://isocpp.org/)
+[![Qt](https://img.shields.io/badge/Qt-6-green.svg)](https://www.qt.io/)
+[![CMake](https://img.shields.io/badge/CMake-3.26+-orange.svg)](https://cmake.org/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+*Быстрый, аккуратный, удобный — привычные сценарии Finder с чистой архитектурой.*
+
+</div>
 
 ![Demo](https://github.com/FoKey-Junior/Finder/blob/main/assets/demonstration.png?raw=true)
 
