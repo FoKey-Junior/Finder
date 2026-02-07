@@ -78,11 +78,12 @@ void MainWindow::build_ui() {
     resize(1320, 820);
 
     tree_model_ = new QFileSystemModel(this);
-    tree_model_->setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
+    tree_model_->setFilter(QDir::AllEntries | QDir::NoDotAndDotDot);
     tree_model_->setRootPath(QDir::rootPath());
 
     file_model_ = new QFileSystemModel(this);
     file_model_->setFilter(QDir::AllEntries | QDir::NoDotAndDotDot);
+    file_model_->setReadOnly(false);
     file_model_->setRootPath(QDir::homePath());
 
     filter_model_ = new QSortFilterProxyModel(this);
@@ -115,6 +116,10 @@ void MainWindow::build_ui() {
     tree_view_->setAnimated(true);
     tree_view_->setUniformRowHeights(true);
     tree_view_->setExpandsOnDoubleClick(true);
+    tree_view_->setColumnHidden(1, true);
+    tree_view_->setColumnHidden(2, true);
+    tree_view_->setColumnHidden(3, true);
+    tree_view_->header()->setSectionResizeMode(0, QHeaderView::Stretch);
 
     auto* left_panel = new QWidget(this);
     auto* left_layout = new QVBoxLayout(left_panel);
