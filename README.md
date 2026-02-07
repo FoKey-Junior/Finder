@@ -1,7 +1,5 @@
 <div align="center">
 
-<img src="https://github.com/user-attachments/assets/ff6e45de-9474-43bb-91bd-4621bd649b4c" alt="Finder Demo" width="700" style="border-radius: 24px; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25); margin-bottom: 24px; border: 1px solid rgba(0, 0, 0, 0.08); display: block; margin-left: auto; margin-right: auto;"/>
-
 # Finder
 
 **Finder‑style файловый менеджер для macOS на Qt 6**
@@ -52,10 +50,3 @@ open build/finder.app
 - `src/MainWindow.cpp` — UI, навигация, контекстные действия, preview
 - `include/MainWindow.h` — интерфейс окна
 - `CMakeLists.txt` — сборка под Qt 6 Widgets
-
-## Roadmap
-- Quick Look‑подобный превью для PDF/Video
-- Горячие клавиши в стиле Finder (Cmd+Del, Cmd+N, Cmd+Up)
-- Сохранение состояния окна и последней директории
-- Пакет `.dmg` для дистрибуции
-

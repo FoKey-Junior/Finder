@@ -1,28 +1,20 @@
 #include "../include/MainWindow.h"
 
-#include <QAbstractItemView>
 #include <QAction>
 #include <QApplication>
 #include <QGuiApplication>
 #include <QColumnView>
 #include <QDesktopServices>
-#include <QDir>
-#include <QFile>
-#include <QFileInfo>
 #include <QFileSystemModel>
 #include <QHeaderView>
-#include <QHBoxLayout>
 #include <QItemSelection>
-#include <QItemSelectionModel>
 #include <QLabel>
 #include <QLineEdit>
-#include <QListView>
 #include <QListWidget>
 #include <QMenu>
 #include <QMessageBox>
 #include <QPixmap>
 #include <QPushButton>
-#include <QScrollArea>
 #include <QSortFilterProxyModel>
 #include <QSplitter>
 #include <QStackedWidget>
@@ -38,37 +30,37 @@
 #include <QStyleHints>
 
 namespace {
-constexpr int kIconViewIndex = 0;
-constexpr int kListViewIndex = 1;
-constexpr int kColumnViewIndex = 2;
-constexpr int kPreviewImageIndex = 0;
-constexpr int kPreviewTextIndex = 1;
-constexpr int kPreviewInfoIndex = 2;
+constexpr int k_icon_view_index = 0;
+constexpr int k_list_view_index = 1;
+constexpr int k_column_view_index = 2;
+constexpr int k_preview_image_index = 0;
+constexpr int k_preview_text_index = 1;
+constexpr int k_preview_info_index = 2;
 
 QString readable_size(qint64 bytes) {
-    constexpr qint64 KB = 1024;
-    constexpr qint64 MB = KB * 1024;
-    constexpr qint64 GB = MB * 1024;
-    constexpr qint64 TB = GB * 1024;
+    constexpr qint64 kb = 1024;
+    constexpr qint64 mb = kb * 1024;
+    constexpr qint64 gb = mb * 1024;
+    constexpr qint64 tb = gb * 1024;
 
-    if (bytes >= TB) return QString::number(bytes / static_cast<double>(TB), 'f', 1) + " TB";
-    if (bytes >= GB) return QString::number(bytes / static_cast<double>(GB), 'f', 1) + " GB";
-    if (bytes >= MB) return QString::number(bytes / static_cast<double>(MB), 'f', 1) + " MB";
-    if (bytes >= KB) return QString::number(bytes / static_cast<double>(KB), 'f', 1) + " KB";
+    if (bytes >= tb) return QString::number(bytes / static_cast<double>(tb), 'f', 1) + " TB";
+    if (bytes >= gb) return QString::number(bytes / static_cast<double>(gb), 'f', 1) + " GB";
+    if (bytes >= mb) return QString::number(bytes / static_cast<double>(mb), 'f', 1) + " MB";
+    if (bytes >= kb) return QString::number(bytes / static_cast<double>(kb), 'f', 1) + " KB";
     return QString::number(bytes) + " B";
 }
 
 bool is_text_file(const QString& ext) {
-    static const QStringList kTextExt{
+    static const QStringList k_text_ext{
         "txt","md","json","cpp","h","hpp","c","cc","m","mm","py","js","ts",
         "css","html","xml","yaml","yml","ini","log","sh","rs","go"
     };
-    return kTextExt.contains(ext.toLower());
+    return k_text_ext.contains(ext.toLower());
 }
 
 bool is_image_file(const QString& ext) {
-    static const QStringList kImageExt{"png","jpg","jpeg","bmp","gif","tiff","heic"};
-    return kImageExt.contains(ext.toLower());
+    static const QStringList k_image_ext{"png","jpg","jpeg","bmp","gif","tiff","heic"};
+    return k_image_ext.contains(ext.toLower());
 }
 }  // namespace
 
@@ -176,7 +168,7 @@ void MainWindow::build_ui() {
     view_stack_->addWidget(icon_view_);
     view_stack_->addWidget(list_view_);
     view_stack_->addWidget(column_view_);
-    view_stack_->setCurrentIndex(kListViewIndex);
+    view_stack_->setCurrentIndex(k_list_view_index);
 
     preview_title_ = new QLabel("No selection", this);
     preview_title_->setStyleSheet("font-weight: 600;");
@@ -200,7 +192,7 @@ void MainWindow::build_ui() {
     preview_stack_->addWidget(preview_image_);
     preview_stack_->addWidget(preview_text_);
     preview_stack_->addWidget(preview_info);
-    preview_stack_->setCurrentIndex(kPreviewInfoIndex);
+    preview_stack_->setCurrentIndex(k_preview_info_index);
 
     auto* preview_panel = new QWidget(this);
     auto* preview_layout = new QVBoxLayout(preview_panel);
@@ -304,16 +296,14 @@ void MainWindow::connect_signals() {
     });
 
     connect(back_action_, &QAction::triggered, this, [this]() {
-        if (history_index_ > 0) {
-            history_index_ -= 1;
-            set_directory(history_.at(history_index_), false);
+        if (path_history_.can_back()) {
+            set_directory(path_history_.back(), false);
         }
     });
 
     connect(forward_action_, &QAction::triggered, this, [this]() {
-        if (history_index_ + 1 < history_.size()) {
-            history_index_ += 1;
-            set_directory(history_.at(history_index_), false);
+        if (path_history_.can_forward()) {
+            set_directory(path_history_.forward(), false);
         }
     });
 
@@ -326,15 +316,15 @@ void MainWindow::connect_signals() {
     });
 
     connect(list_view_action_, &QAction::triggered, this, [this]() {
-        view_stack_->setCurrentIndex(kListViewIndex);
+        view_stack_->setCurrentIndex(k_list_view_index);
     });
 
     connect(icon_view_action_, &QAction::triggered, this, [this]() {
-        view_stack_->setCurrentIndex(kIconViewIndex);
+        view_stack_->setCurrentIndex(k_icon_view_index);
     });
 
     connect(column_view_action_, &QAction::triggered, this, [this]() {
-        view_stack_->setCurrentIndex(kColumnViewIndex);
+        view_stack_->setCurrentIndex(k_column_view_index);
     });
 
     connect(qGuiApp->styleHints(), &QStyleHints::colorSchemeChanged, this, [this]() {
@@ -378,11 +368,7 @@ void MainWindow::set_directory(const QString& path, bool add_history) {
     }
 
     if (add_history) {
-        if (history_index_ + 1 < history_.size()) {
-            history_ = history_.mid(0, history_index_ + 1);
-        }
-        history_.push_back(absolute_path);
-        history_index_ = history_.size() - 1;
+        path_history_.push(absolute_path);
     }
 
     update_history_actions();
@@ -436,8 +422,8 @@ void MainWindow::open_item(const QModelIndex& proxy_index) {
 }
 
 void MainWindow::update_history_actions() {
-    back_action_->setEnabled(history_index_ > 0);
-    forward_action_->setEnabled(history_index_ + 1 < history_.size());
+    back_action_->setEnabled(path_history_.can_back());
+    forward_action_->setEnabled(path_history_.can_forward());
 }
 
 void MainWindow::rebuild_breadcrumbs(const QString& path) {
@@ -478,7 +464,7 @@ void MainWindow::update_preview(const QModelIndex& proxy_index) {
         : QString("%1 • %2").arg(readable_size(info.size()), info.lastModified().toString("yyyy-MM-dd HH:mm")));
 
     if (info.isDir()) {
-        preview_stack_->setCurrentIndex(kPreviewInfoIndex);
+        preview_stack_->setCurrentIndex(k_preview_info_index);
         return;
     }
 
@@ -487,7 +473,7 @@ void MainWindow::update_preview(const QModelIndex& proxy_index) {
         QPixmap pix(path);
         if (!pix.isNull()) {
             preview_image_->setPixmap(pix.scaled(260, 260, Qt::KeepAspectRatio, Qt::SmoothTransformation));
-            preview_stack_->setCurrentIndex(kPreviewImageIndex);
+            preview_stack_->setCurrentIndex(k_preview_image_index);
             return;
         }
     }
@@ -497,12 +483,12 @@ void MainWindow::update_preview(const QModelIndex& proxy_index) {
         if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
             const QByteArray data = file.read(200 * 1024);
             preview_text_->setPlainText(QString::fromUtf8(data));
-            preview_stack_->setCurrentIndex(kPreviewTextIndex);
+            preview_stack_->setCurrentIndex(k_preview_text_index);
             return;
         }
     }
 
-    preview_stack_->setCurrentIndex(kPreviewInfoIndex);
+    preview_stack_->setCurrentIndex(k_preview_info_index);
 }
 
 void MainWindow::show_context_menu(const QPoint& position, QAbstractItemView* view) {

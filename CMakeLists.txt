@@ -14,7 +14,9 @@ find_package(Qt6 REQUIRED COMPONENTS Widgets)
 add_executable(finder MACOSX_BUNDLE
         src/main.cpp
         src/MainWindow.cpp
+        src/path_history.cpp
         include/MainWindow.h
+        include/path_history.h
 )
 
 target_include_directories(finder

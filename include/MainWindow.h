@@ -2,7 +2,7 @@
 #define FS_MAIN_WINDOW_H
 
 #include <QMainWindow>
-#include <QStringList>
+#include "path_history.h"
 
 class QFileSystemModel;
 class QSortFilterProxyModel;
@@ -75,8 +75,7 @@ private:
     QTextEdit* preview_text_{nullptr};
     QStackedWidget* preview_stack_{nullptr};
 
-    QStringList history_;
-    int history_index_{-1};
+    path_history path_history_;
     bool dark_theme_{false};
 };
 
