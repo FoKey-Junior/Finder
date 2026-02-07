@@ -4,7 +4,7 @@
 
 **Finder‑style файловый менеджер для macOS на Qt 6**
 
-[![C++](https://img.shields.io/badge/C++-14-blue.svg)](https://isocpp.org/)
+[![C++](https://img.shields.io/badge/C++-23-blue.svg)](https://isocpp.org/)
 [![Qt](https://img.shields.io/badge/Qt-6-green.svg)](https://www.qt.io/)
 [![CMake](https://img.shields.io/badge/CMake-3.26+-orange.svg)](https://cmake.org/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
