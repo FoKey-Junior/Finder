@@ -535,22 +535,18 @@ QString MainWindow::index_path(const QModelIndex& proxy_index) const {
 }
 
 void MainWindow::create_folder() {
-    const QString base = file_model_->rootPath();
-    QString new_name = "New Folder";
-    QDir dir(base);
-    if (dir.exists(new_name)) {
-        int suffix = 2;
-        while (dir.exists(QString("New Folder %1").arg(suffix))) {
-            suffix += 1;
-        }
-        new_name = QString("New Folder %1").arg(suffix);
+    QDir dir(file_model_->rootPath());
+    const QString base_name = QStringLiteral("New Folder");
+    QString new_name = base_name;
+    for (int suffix = 2; dir.exists(new_name); ++suffix) {
+        new_name = base_name + QLatin1Char(' ') + QString::number(suffix);
     }
 
     if (dir.mkdir(new_name)) {
-        const QModelIndex source = file_model_->index(base + "/" + new_name);
+        const QString new_folder_path = dir.filePath(new_name);
+        const QModelIndex source = file_model_->index(new_folder_path);
         const QModelIndex proxy = filter_model_->mapFromSource(source);
-        QAbstractItemView* view = qobject_cast<QAbstractItemView*>(view_stack_->currentWidget());
-        if (view) {
+        if (auto* view = qobject_cast<QAbstractItemView*>(view_stack_->currentWidget())) {
             view->setCurrentIndex(proxy);
             view->edit(proxy);
         }
