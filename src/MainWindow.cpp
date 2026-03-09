@@ -554,12 +554,20 @@ void MainWindow::create_folder() {
 }
 
 void MainWindow::delete_selected() {
-    QAbstractItemView* view = qobject_cast<QAbstractItemView*>(view_stack_->currentWidget());
+    auto* view = qobject_cast<QAbstractItemView*>(view_stack_->currentWidget());
     if (!view) return;
-    const QModelIndexList selected = view->selectionModel()->selectedIndexes();
+
+    auto* selection_model = view->selectionModel();
+    if (!selection_model) return;
+
+    QModelIndexList selected = selection_model->selectedRows(0);
+    if (selected.isEmpty()) {
+        selected = selection_model->selectedIndexes();
+    }
     if (selected.isEmpty()) return;
 
     QSet<QString> paths;
+    paths.reserve(selected.size());
     for (const QModelIndex& idx : selected) {
         if (idx.column() != 0) continue;
         const QString path = index_path(idx);
