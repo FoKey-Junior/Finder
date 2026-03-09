@@ -442,15 +442,17 @@ void MainWindow::rebuild_breadcrumbs(const QString& path) {
         delete child;
     }
 
-    QString current;
-    const QStringList parts = QDir::toNativeSeparators(path).split('/', Qt::SkipEmptyParts);
-    QPushButton* root_button = new QPushButton("/", breadcrumb_bar_);
+    const QStringList parts = QDir::cleanPath(path).split('/', Qt::SkipEmptyParts);
+    auto* root_button = new QPushButton(QStringLiteral("/"), breadcrumb_bar_);
     root_button->setFlat(true);
     connect(root_button, &QPushButton::clicked, this, [this]() { set_directory("/", true); });
     layout->addWidget(root_button);
 
+    QString current;
+    current.reserve(path.size());
     for (const QString& part : parts) {
-        current += "/" + part;
+        current.append(QLatin1Char('/'));
+        current.append(part);
         auto* btn = new QPushButton(part, breadcrumb_bar_);
         btn->setFlat(true);
         connect(btn, &QPushButton::clicked, this, [this, current]() { set_directory(current, true); });
