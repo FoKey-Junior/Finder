@@ -13,6 +13,7 @@
 #include <QListWidget>
 #include <QMenu>
 #include <QMessageBox>
+#include <QImageReader>
 #include <QPixmap>
 #include <QPushButton>
 #include <QSortFilterProxyModel>
@@ -55,12 +56,12 @@ bool is_text_file(const QString& ext) {
         "txt","md","json","cpp","h","hpp","c","cc","m","mm","py","js","ts",
         "css","html","xml","yaml","yml","ini","log","sh","rs","go"
     };
-    return k_text_ext.contains(ext.toLower());
+    return k_text_ext.contains(ext, Qt::CaseInsensitive);
 }
 
 bool is_image_file(const QString& ext) {
     static const QStringList k_image_ext{"png","jpg","jpeg","bmp","gif","tiff","heic"};
-    return k_image_ext.contains(ext.toLower());
+    return k_image_ext.contains(ext, Qt::CaseInsensitive);
 }
 }  // namespace
 
@@ -475,9 +476,18 @@ void MainWindow::update_preview(const QModelIndex& proxy_index) {
 
     const QString ext = info.suffix();
     if (is_image_file(ext)) {
-        QPixmap pix(path);
-        if (!pix.isNull()) {
-            preview_image_->setPixmap(pix.scaled(260, 260, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+        QImageReader reader(path);
+        reader.setAutoTransform(true);
+
+        const QSize target_size{260, 260};
+        const QSize original_size = reader.size();
+        if (original_size.isValid()) {
+            reader.setScaledSize(original_size.scaled(target_size, Qt::KeepAspectRatio));
+        }
+
+        const QImage image = reader.read();
+        if (!image.isNull()) {
+            preview_image_->setPixmap(QPixmap::fromImage(image));
             preview_stack_->setCurrentIndex(k_preview_image_index);
             return;
         }
