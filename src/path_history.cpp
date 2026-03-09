@@ -2,7 +2,8 @@
 
 void path_history::push(const QString& path) {
     if (index_ + 1 < entries_.size()) {
-        entries_ = entries_.mid(0, index_ + 1);
+        const int next_index = index_ + 1;
+        entries_.remove(next_index, entries_.size() - next_index);
     }
     entries_.push_back(path);
     index_ = entries_.size() - 1;
