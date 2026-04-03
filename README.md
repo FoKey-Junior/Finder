@@ -9,7 +9,7 @@
 [![CMake](https://img.shields.io/badge/CMake-3.26+-orange.svg)](https://cmake.org/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-*Быстрый, аккуратный, удобный — привычные сценарии Finder с чистой архитектурой*
+*Быстрый, аккуратный, удобный - привычные сценарии Finder с чистой архитектурой*
 
 </div>
 
@@ -50,6 +50,6 @@ open build/finder.app
 ```
 
 ## Архитектура
-- `src/MainWindow.cpp` — UI, навигация, контекстные действия, preview
-- `include/MainWindow.h` — интерфейс окна
-- `CMakeLists.txt` — сборка под Qt 6 Widgets
+- `src/MainWindow.cpp` - UI, навигация, контекстные действия, preview
+- `include/MainWindow.h` - интерфейс окна
+- `CMakeLists.txt` - сборка под Qt 6 Widgets
