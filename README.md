@@ -1,6 +1,6 @@
 <div align="center">
 
-# Finder
+# New Finder
 
 **A Finder-style file manager for macOS built with Qt 6**
 
